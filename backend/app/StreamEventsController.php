@@ -7,6 +7,7 @@ use App\Models\Follower;
 use App\Models\Subscriber;
 use App\Models\Donation;
 use App\Models\MerchSale;
+use Carbon\Carbon;
 
 class StreamEventsController extends Controller
 {
@@ -17,25 +18,24 @@ class StreamEventsController extends Controller
         $subscribers = Subscriber::all();
         $donations = Donation::all();
         $merchSales = MerchSale::all();
-        
+
         // Combine them into a single list
         $events = $followers->concat($subscribers)->concat($donations)->concat($merchSales);
-        
+
         // Sort them by creation date
         $sortedEvents = $events->sortByDesc('created_at');
-        
+
         // Paginate the result (e.g., 100 per page)
         $paginatedEvents = $sortedEvents->paginate(100);
-        
-        // Return the paginated result as JSON
+
         return response()->json($paginatedEvents);
     }
     
     public function markAsRead(Request $request, $id, $type)
     {
-        // Find the event by its ID and type (follower, subscriber, donation, merch_sale)
+        // Find the event by its ID and type
         $event = null;
-        switch ($type) {
+        switch($type) {
             case 'follower':
                 $event = Follower::find($id);
                 break;
@@ -45,24 +45,21 @@ class StreamEventsController extends Controller
             case 'donation':
                 $event = Donation::find($id);
                 break;
-            case 'merch_sale':
+            case 'merchSale':
                 $event = MerchSale::find($id);
                 break;
-            default:
-                return response()->json(['error' => 'Invalid event type'], 400);
         }
-        
+
         if (!$event) {
-            return response()->json(['error' => 'Event not found'], 404);
+            return response()->json(['message' => 'Event not found'], 404);
         }
-        
+
         // Mark it as read
         $event->is_read = true;
         
         // Save the changes
         $event->save();
-        
-        // Return a success response
-        return response()->json(['message' => 'Event marked as read']);
+
+        return response()->json(['message' => 'Marked as read']);
     }
 }

@@ -1,6 +1,17 @@
-<form method="post" action="/login">
-    @csrf
-    <input type="email" name="email" placeholder="Email">
-    <input type="password" name="password" placeholder="Password">
-    <button type="submit">Login</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Login to StreamLabs</h1>
+    </div>
+    <div class="main-content">
+        <!-- OAuth Login -->
+        <a href="/login/github">Login with GitHub</a>
+    </div>
+    <script src="/js/main.js"></script>
+</body>
+</html>
